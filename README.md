@@ -29,8 +29,8 @@ filehub/
 
 ### 1. Database Setup
 Ensure your MySQL server is running and configure a database with the credentials:
-- **Database Name:** `filehub`
-- **Database Password:** `jagga2527`
+- **Database Name:** `Your_dbname`
+- **Database Password:** `Db_password`
 
 *(The backend will automatically initialize the database schema and tables upon startup).*
 
