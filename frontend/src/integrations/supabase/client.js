@@ -29,6 +29,54 @@ const authListeners = new Set();
 
 export const supabase = {
   auth: {
+    sendSignupOtp: async ({ email, password }) => {
+      try {
+        const data = await apiFetch("/api/auth/signup-otp", {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+        });
+        return { data, error: null };
+      } catch (err) {
+        return { data: null, error: { message: err.message } };
+      }
+    },
+    verifySignupOtp: async ({ email, otp }) => {
+      try {
+        const data = await apiFetch("/api/auth/verify-signup-otp", {
+          method: "POST",
+          body: JSON.stringify({ email, otp }),
+        });
+        return { data, error: null };
+      } catch (err) {
+        return { data: null, error: { message: err.message } };
+      }
+    },
+    resetPasswordForEmail: async (email, options = {}) => {
+      try {
+        const data = await apiFetch("/api/auth/forgot-password-otp", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        });
+        return { data, error: null };
+      } catch (err) {
+        return { data: null, error: { message: err.message } };
+      }
+    },
+    verifyOtp: async ({ email, token, type }) => {
+      try {
+        const data = await apiFetch("/api/auth/verify-recovery-otp", {
+          method: "POST",
+          body: JSON.stringify({ email, otp: token }),
+        });
+        const session = data.session;
+        localStorage.setItem("filehub_token", session.access_token);
+        localStorage.setItem("filehub_session", JSON.stringify(session));
+        authListeners.forEach((callback) => callback("SIGNED_IN", session));
+        return { data: { session, user: session.user }, error: null };
+      } catch (err) {
+        return { data: null, error: { message: err.message } };
+      }
+    },
     signUp: async ({ email, password }) => {
       try {
         const data = await apiFetch("/api/auth/signup", {

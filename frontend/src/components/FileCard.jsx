@@ -38,7 +38,11 @@ const FileCard = ({ file, onDelete }) => {
       return;
     }
 
-    if (file.content_type?.startsWith("image/")) {
+    if (
+      file.content_type?.startsWith("image/") ||
+      file.content_type?.startsWith("video/") ||
+      file.content_type?.startsWith("audio/")
+    ) {
       setPreviewUrl(data.signedUrl);
       setViewOpen(true);
     } else {
@@ -141,12 +145,26 @@ const FileCard = ({ file, onDelete }) => {
             <div className="whitespace-pre-wrap rounded-lg bg-secondary p-4 text-sm text-foreground">
               {file.text_content}
             </div>
-          ) : previewUrl ? (
-            <img
-              src={previewUrl}
-              alt={file.file_name}
-              className="mx-auto max-h-[60vh] rounded-lg object-contain"
-            />
+          ) : previewUrl && viewOpen ? (
+            file.content_type?.startsWith("video/") ? (
+              <video
+                src={previewUrl}
+                controls
+                className="mx-auto max-h-[60vh] w-full rounded-lg object-contain"
+              />
+            ) : file.content_type?.startsWith("audio/") ? (
+              <audio
+                src={previewUrl}
+                controls
+                className="mx-auto w-full py-4"
+              />
+            ) : (
+              <img
+                src={previewUrl}
+                alt={file.file_name}
+                className="mx-auto max-h-[60vh] rounded-lg object-contain"
+              />
+            )
           ) : null}
         </DialogContent>
       </Dialog>

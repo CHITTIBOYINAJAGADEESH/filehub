@@ -34,10 +34,14 @@ const ALLOWED_TYPES = [
   "application/x-zip-compressed",
 ];
 
-const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
 const MAX_TEXT_WORDS = 5000;
 
-const UploadPanel = ({ onUploadComplete, onClose }) => {
+const VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "mov", "avi", "mkv", "wmv", "flv", "3gp"];
+const AUDIO_EXTENSIONS = ["mp3", "wav", "aac", "flac", "ogg", "m4a", "wma", "amr", "ape"];
+const MAX_TOTAL_STORAGE = 500 * 1024 * 1024; // 500MB
+
+const UploadPanel = ({ onUploadComplete, onClose, currentStorageUsage }) => {
   const { user } = useAuth();
   const [file, setFile] = useState(null);
   const [textContent, setTextContent] = useState("");
@@ -56,23 +60,35 @@ const UploadPanel = ({ onUploadComplete, onClose }) => {
     if (droppedFile) validateAndSetFile(droppedFile);
   }, []);
 
+  const getFileExtension = (name) =>
+    name.split(".").pop()?.toLowerCase() || "unknown";
+
   const validateAndSetFile = (f) => {
-    if (!ALLOWED_TYPES.includes(f.type)) {
+    const ext = getFileExtension(f.name);
+    const isVideo = f.type?.startsWith("video/") || VIDEO_EXTENSIONS.includes(ext);
+    const isAudio = f.type?.startsWith("audio/") || AUDIO_EXTENSIONS.includes(ext);
+
+    if (!ALLOWED_TYPES.includes(f.type) && !isVideo && !isAudio) {
       toast.error("Unsupported file type");
       return;
     }
     if (f.size > MAX_FILE_SIZE) {
-      toast.error("File exceeds 15MB limit");
+      toast.error("File exceeds 500MB limit");
+      return;
+    }
+    if ((currentStorageUsage || 0) + f.size > MAX_TOTAL_STORAGE) {
+      toast.error("Upload would exceed your 500MB total storage limit");
       return;
     }
     setFile(f);
   };
 
-  const getFileExtension = (name) =>
-    name.split(".").pop()?.toLowerCase() || "unknown";
-
   const handleFileUpload = async () => {
     if (!file || !user) return;
+    if ((currentStorageUsage || 0) + file.size > MAX_TOTAL_STORAGE) {
+      toast.error("Upload exceeds your 500MB total storage limit");
+      return;
+    }
     setUploading(true);
     setUploadProgress(10);
 
@@ -118,6 +134,11 @@ const UploadPanel = ({ onUploadComplete, onClose }) => {
     if (!textContent.trim() || !textTitle.trim() || !user) return;
     if (wordCount > MAX_TEXT_WORDS) {
       toast.error(`Text exceeds ${MAX_TEXT_WORDS} word limit`);
+      return;
+    }
+    const noteSize = new Blob([textContent]).size;
+    if ((currentStorageUsage || 0) + noteSize > MAX_TOTAL_STORAGE) {
+      toast.error("Note exceeds your 500MB total storage limit");
       return;
     }
     setUploading(true);
@@ -194,14 +215,14 @@ const UploadPanel = ({ onUploadComplete, onClose }) => {
               Drag & drop or click to upload
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Max 15MB · Images, PDF, Docs, Excel, Text, Code, CSV, JSON, Zip
+              Max 500MB · Images, Video, Audio, PDF, Docs, Excel, Text, Code, CSV, JSON, Zip
             </p>
           </div>
           <input
             id="file-input"
             type="file"
             className="hidden"
-            accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.java,.py,.html,.css,.js,.csv,.json"
+            accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.java,.py,.html,.css,.js,.csv,.json,audio/*,video/*"
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) validateAndSetFile(f);

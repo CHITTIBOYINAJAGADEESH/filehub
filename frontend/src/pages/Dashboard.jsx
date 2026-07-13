@@ -88,7 +88,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <div className="mx-auto flex w-full max-w-none items-center justify-between px-4 md:px-6 py-2.5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
               <Shield className="h-5 w-5 text-primary" />
@@ -107,7 +107,7 @@ const Dashboard = () => {
       </header>
 
       {/* Main */}
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto w-full max-w-none px-4 md:px-6 pt-5 pb-8">
         {/* Stats bar */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-6">
@@ -118,10 +118,19 @@ const Dashboard = () => {
               <p className="text-xs text-muted-foreground">Files</p>
             </div>
             <div>
-              <p className="text-2xl font-bold font-display text-foreground">
-                {(totalSize / (1024 * 1024)).toFixed(1)} MB
-              </p>
-              <p className="text-xs text-muted-foreground">Total Size</p>
+              <div className="flex items-baseline gap-1">
+                <p className="text-2xl font-bold font-display text-foreground">
+                  {(totalSize / (1024 * 1024)).toFixed(1)} MB
+                </p>
+                <p className="text-xs text-muted-foreground">/ 500 MB</p>
+              </div>
+              <p className="text-xs text-muted-foreground mb-1.5">Storage Used</p>
+              <div className="h-1.5 w-32 overflow-hidden rounded-full bg-secondary">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ width: `${Math.min(100, (totalSize / (500 * 1024 * 1024)) * 100)}%` }}
+                />
+              </div>
             </div>
           </div>
           <Button onClick={() => setShowUpload(!showUpload)}>
@@ -135,6 +144,7 @@ const Dashboard = () => {
             <UploadPanel
               onUploadComplete={fetchFiles}
               onClose={() => setShowUpload(false)}
+              currentStorageUsage={totalSize}
             />
           </div>
         )}

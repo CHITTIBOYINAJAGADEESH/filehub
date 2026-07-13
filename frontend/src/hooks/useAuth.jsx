@@ -37,6 +37,16 @@ export const AuthProvider = ({ children }) => {
     return { error: error };
   };
 
+  const sendSignupOtp = async (email, password) => {
+    const { data, error } = await supabase.auth.sendSignupOtp({ email, password });
+    return { data, error };
+  };
+
+  const verifySignupOtp = async (email, otp) => {
+    const { data, error } = await supabase.auth.verifySignupOtp({ email, otp });
+    return { data, error };
+  };
+
   const signIn = async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -51,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ session, user, loading, signUp, signIn, signOut }}
+      value={{ session, user, loading, signUp, signIn, signOut, sendSignupOtp, verifySignupOtp }}
     >
       {children}
     </AuthContext.Provider>

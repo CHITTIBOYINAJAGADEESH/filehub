@@ -4,7 +4,7 @@ FileHub is a secure fullstack web application for storing files and writing text
 
 ## Features
 - **User Authentication:** Registration, login, password updates, and secure profile management.
-- **File Management:** Upload, preview, download, and delete files (documents, images, ZIPs, code, sheets).
+- **File Management:** Upload, preview, download, and delete files (documents, images, video, audio, ZIPs, code, sheets).
 - **Text Notes:** Write and save rich text notes directly to the database.
 - **Structured Storage:** Dynamically separates user uploads into dedicated subfolders under `backend/uploads/<user_id>/`.
 

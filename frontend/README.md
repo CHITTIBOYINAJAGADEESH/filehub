@@ -4,7 +4,7 @@ FileHub is a modern, secure file storage and note-sharing web application. Uploa
 
 ## Features
 
-- **Secure File Upload**: Upload images, PDFs, documents, text files, code, and zip archives up to 15MB.
+- **Secure File Upload**: Upload images, video, audio, PDFs, documents, text files, code, and zip archives up to 50MB.
 - **Text Notes**: Write and save text notes with word count limits.
 - **User Authentication**: Secure register, login, and password reset flows.
 - **Modern Responsive Dashboard**: Fully responsive user interface designed with a premium, sleek dark mode theme.

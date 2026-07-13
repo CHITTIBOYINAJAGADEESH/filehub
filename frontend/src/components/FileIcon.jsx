@@ -6,6 +6,8 @@ import {
   File,
   FileType2,
   StickyNote,
+  FileVideo,
+  FileAudio,
 } from "lucide-react";
 
 const FileIcon = ({ fileType, className = "h-8 w-8" }) => {
@@ -17,6 +19,20 @@ const FileIcon = ({ fileType, className = "h-8 w-8" }) => {
     )
   ) {
     return <FileImage className={`${className} text-primary`} />;
+  }
+  if (
+    ["mp4", "webm", "ogg", "mov", "avi", "mkv", "wmv", "flv", "3gp"].some((ext) =>
+      type.includes(ext),
+    )
+  ) {
+    return <FileVideo className={`${className} text-purple-400`} />;
+  }
+  if (
+    ["mp3", "wav", "aac", "flac", "m4a", "wma", "amr", "ape"].some((ext) =>
+      type.includes(ext),
+    )
+  ) {
+    return <FileAudio className={`${className} text-pink-400`} />;
   }
   if (type.includes("pdf")) {
     return <FileText className={`${className} text-destructive`} />;

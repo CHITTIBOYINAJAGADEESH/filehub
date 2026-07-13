@@ -65,6 +65,19 @@ export async function initializeDatabase() {
     )
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS otps (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      email VARCHAR(255) NOT NULL,
+      otp VARCHAR(6) NOT NULL,
+      purpose VARCHAR(50) NOT NULL,
+      password_hash VARCHAR(255) NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_email_purpose (email, purpose)
+    )
+  `);
+
   console.log("Database initialized successfully!");
 }
 
